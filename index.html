@@ -2,6 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Cache-Control" content="no-cache">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Taste – kalorie ze zdjęcia i przepisy z lodówki</title>
 <meta name="description" content="Taste liczy kalorie ze zdjęcia albo z opisu i podpowiada przepisy z tego, co masz w lodówce. Pobierz w App Store.">
@@ -63,8 +64,14 @@
 // There: try to hand the link to Safari, and always show how to get out manually.
 (function () {
   var sklep = "apps.apple.com/pl/app/id6783475199";
-  var wApce = /musical_ly|BytedanceWebview|TikTok|trill|Instagram|FBAN|FBAV|FB_IAB/i.test(navigator.userAgent);
+  var ua = navigator.userAgent, ios = /iPhone|iPad|iPod/i.test(ua);
+  // an iOS web view (any app's built-in browser) has no "Safari/" token in its user agent
+  var wApce = /musical_ly|BytedanceWebview|TikTok|trill|Instagram|FBAN|FBAV|FB_IAB/i.test(ua) || (ios && !/Safari\//i.test(ua));
   var hint = document.getElementById("hint"), btn = document.getElementById("pobierz"), kop = document.getElementById("kopiuj");
+  // whatever the browser says about itself: if a tap on the button leaves us on this page, show the way out
+  btn.addEventListener("click", function () {
+    setTimeout(function () { if (!document.hidden) { hint.hidden = false; hint.scrollIntoView({ block: "center", behavior: "smooth" }); } }, 1200);
+  });
   if (wApce) {
     hint.hidden = false;
     btn.addEventListener("click", function (e) {
